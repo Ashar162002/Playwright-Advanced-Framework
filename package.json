@@ -1,0 +1,42 @@
+{
+  "name": "playwright-advanced-framework",
+  "version": "1.0.0",
+  "description": "A modular, production-grade Playwright Page Object Model framework for UI end-to-end automation.",
+  "author": "",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "postinstall": "playwright install",
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "test:ui": "playwright test --ui",
+    "test:smoke": "playwright test tests/smoke",
+    "test:regression": "playwright test tests/regression",
+    "test:e2e": "playwright test tests/e2e",
+    "test:parallel": "playwright test --workers=4",
+    "test:failed": "playwright test --last-failed --retries=0",
+    "report": "playwright show-report reports/html",
+    "install:browsers": "playwright install"
+  },
+  "keywords": [
+    "playwright",
+    "automation",
+    "page-object-model",
+    "e2e",
+    "testing",
+    "sdet"
+  ],
+  "devDependencies": {
+    "@playwright/test": "^1.57.0",
+    "dotenv": "^16.4.0",
+    "module-alias": "^2.2.3"
+  },
+  "_moduleAliases": {
+    "@config": "config",
+    "@fixtures": "fixtures",
+    "@locators": "locators",
+    "@pages": "pages",
+    "@utils": "utils"
+  }
+}
