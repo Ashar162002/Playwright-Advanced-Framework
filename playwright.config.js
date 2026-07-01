@@ -7,6 +7,7 @@ const config = require("./config");
 module.exports = defineConfig({
   testDir: "./tests",
   outputDir: "reports/test-results",
+  globalTeardown: require.resolve("./global-teardown-healing.js"),
   fullyParallel: true,
   forbidOnly: config.env.CI,
   retries: config.env.CI ? 2 : 0,
