@@ -1,15 +1,17 @@
 const { expect } = require("@playwright/test");
 const config = require("@config");
+const SelfHealingLocator = require("@utils/selfHealing");
 
 class BasePage {
   constructor(page) {
     this.page = page;
     this.timeout = config.testData.ACTION_TIMEOUT;
+    this.selfHealer = new SelfHealingLocator(page);
   }
 
-  // Central locator resolution. Every action and assertion funnels through here,
-  // which keeps page objects declarative and gives the framework a single seam
-  // to extend later (e.g. self-healing fallbacks) without touching call sites.
+  // Central locator resolution. Every action funnels through here, which keeps
+  // page objects declarative and gives the framework a single seam for the
+  // self-healing engine without touching call sites.
   locator(selector, options = {}) {
     return this.page.locator(selector, options);
   }
@@ -18,10 +20,26 @@ class BasePage {
     await this.page.goto(url, { waitUntil: "domcontentloaded", ...options });
   }
 
+  // Resolution seam for actions: wait for the element normally, and only if that
+  // fails fall back to the self-healing engine. A confident heal returns the
+  // replacement locator so the caller acts on it transparently; otherwise the
+  // original error propagates. Assertions deliberately bypass this path.
   async waitForVisible(selector, timeout = this.timeout) {
     const element = this.locator(selector).first();
-    await element.waitFor({ state: "visible", timeout });
-    return element;
+    try {
+      await element.waitFor({ state: "visible", timeout });
+      return element;
+    } catch (error) {
+      const healed = await this._heal(selector);
+      if (healed) return healed;
+      throw error;
+    }
+  }
+
+  async _heal(selector) {
+    if (typeof this.page.isClosed === "function" && this.page.isClosed()) return null;
+    const result = await this.selfHealer.heal(selector, this.page).catch(() => null);
+    return result ? result.element : null;
   }
 
   async waitForHidden(selector, timeout = this.timeout) {
@@ -46,8 +64,8 @@ class BasePage {
   }
 
   async selectOption(selector, value) {
-    await this.waitForVisible(selector);
-    await this.locator(selector).selectOption(value);
+    const element = await this.waitForVisible(selector);
+    await element.selectOption(value);
   }
 
   async getText(selector) {
