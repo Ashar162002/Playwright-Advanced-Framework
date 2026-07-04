@@ -14,9 +14,13 @@
     "test:smoke": "playwright test tests/smoke",
     "test:regression": "playwright test tests/regression",
     "test:e2e": "playwright test tests/e2e",
+    "test:healing": "playwright test tests/healing",
     "test:parallel": "playwright test --workers=4",
     "test:failed": "playwright test --last-failed --retries=0",
+    "codegen": "playwright codegen https://www.saucedemo.com",
+    "trace": "playwright show-trace",
     "report": "playwright show-report reports/html",
+    "mcp": "playwright-mcp-server",
     "install:browsers": "playwright install"
   },
   "keywords": [
@@ -28,6 +32,7 @@
     "sdet"
   ],
   "devDependencies": {
+    "@executeautomation/playwright-mcp-server": "^1.0.12",
     "@playwright/test": "^1.57.0",
     "dotenv": "^16.4.0",
     "module-alias": "^2.2.3"
