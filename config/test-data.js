@@ -1,8 +1,8 @@
-const { raw, toBoolean, toNumber } = require("./env.config");
+const { raw, TEST_ENV, toBoolean, toNumber } = require("./env.config");
 
 const runtime = {
   HEADLESS: toBoolean(raw.HEADLESS, true),
-  WORKERS: toNumber(raw.WORKERS, 4),
+  WORKERS: toNumber(raw.WORKERS, TEST_ENV === "local" ? 1 : 4),
   VIEWPORT_WIDTH: toNumber(raw.VIEWPORT_WIDTH, 1440),
   VIEWPORT_HEIGHT: toNumber(raw.VIEWPORT_HEIGHT, 900),
   TEST_TIMEOUT: toNumber(raw.TEST_TIMEOUT, 60000),

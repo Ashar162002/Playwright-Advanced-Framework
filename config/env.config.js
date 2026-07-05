@@ -1,6 +1,17 @@
 const SUPPORTED_ENVIRONMENTS = ["local", "staging", "prod"];
+const SUPPORTED_BROWSERS = ["chromium", "firefox", "webkit"];
 
 const TEST_ENV = (process.env.TEST_ENV || "local").toLowerCase();
+
+const BROWSER = process.env.BROWSER
+  ? process.env.BROWSER.toLowerCase()
+  : null;
+
+if (BROWSER && !SUPPORTED_BROWSERS.includes(BROWSER)) {
+  throw new Error(
+    `Unsupported BROWSER "${BROWSER}". Expected one of: ${SUPPORTED_BROWSERS.join(", ")}`
+  );
+}
 
 if (!SUPPORTED_ENVIRONMENTS.includes(TEST_ENV)) {
   throw new Error(
@@ -20,6 +31,7 @@ const toNumber = (value, fallback) => {
 
 module.exports = {
   TEST_ENV,
+  BROWSER,
   CI: toBoolean(process.env.CI, false),
   raw: process.env,
   toBoolean,

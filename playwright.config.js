@@ -47,5 +47,5 @@ module.exports = defineConfig({
       name: "webkit",
       use: { ...devices["Desktop Safari"] },
     },
-  ],
+  ].filter(p => !config.env.BROWSER || p.name === config.env.BROWSER),
 });
