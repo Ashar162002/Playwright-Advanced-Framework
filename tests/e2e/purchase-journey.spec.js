@@ -1,5 +1,5 @@
 const { test, expect, config } = require("@fixtures");
-
+// test
 const { products, checkoutCustomer, messages } = config.testData;
 
 test.describe("@e2e Purchase journey", () => {
