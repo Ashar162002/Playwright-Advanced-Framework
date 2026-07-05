@@ -6,6 +6,11 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
 jobs:
   test:
     name: Run Playwright suite
@@ -32,6 +37,16 @@ jobs:
         run: npx playwright test
         env:
           CI: true
+
+      - name: Comment PR with test report
+        if: always() && github.event_name == 'pull_request'
+        uses: daun/playwright-report-summary@v4
+        with:
+          report-file: reports/json/results.json
+          comment-title: "Playwright test results"
+          report-url: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          custom-info: "Download the full HTML report from the [workflow run artifacts](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})."
+          job-summary: true
 
       - name: Upload HTML report
         if: always()

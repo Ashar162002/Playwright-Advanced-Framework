@@ -186,9 +186,10 @@ A GitHub Actions workflow (`.github/workflows/playwright.yml`) runs the full sui
 1. Checks out the code and sets up Node.js 22 (with npm caching).
 2. Installs dependencies (`npm ci`) and the Playwright browsers with OS dependencies.
 3. Runs `npx playwright test` across all configured projects (chromium, firefox, webkit).
-4. Uploads the HTML report, JUnit results, and traces/screenshots/videos as workflow artifacts (kept 14 days), even if tests fail.
+4. Posts (or updates) a comment on the pull request summarising the results — pass/fail/flaky counts, failed test details, and a link to the full workflow run — via [`daun/playwright-report-summary`](https://github.com/daun/playwright-report-summary).
+5. Uploads the HTML report, JUnit results, and traces/screenshots/videos as workflow artifacts (kept 14 days), even if tests fail.
 
-The PR's check status (pass/fail) reflects the suite's result, so it can be wired up as a required check in branch protection settings. To inspect a failed run, download the `playwright-html-report` artifact from the workflow run and open `index.html`, or `playwright-test-results` for traces of failed tests.
+The PR's check status (pass/fail) reflects the suite's result, so it can be wired up as a required check in branch protection settings. To inspect a failed run, download the `playwright-html-report` artifact from the workflow run and open `index.html`, or `playwright-test-results` for traces of failed tests — both are linked from the PR comment.
 
 ## License
 
