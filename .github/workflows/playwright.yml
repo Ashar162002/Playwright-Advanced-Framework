@@ -1,0 +1,59 @@
+name: Playwright Tests
+
+on:
+  pull_request:
+    branches: ["**"]
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    name: Run Playwright suite
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests
+        run: npx playwright test
+        env:
+          CI: true
+
+      - name: Upload HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-html-report
+          path: reports/html
+          retention-days: 14
+
+      - name: Upload JUnit results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-junit-results
+          path: reports/junit
+          retention-days: 14
+
+      - name: Upload traces & test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-test-results
+          path: reports/test-results
+          retention-days: 14
+          if-no-files-found: ignore
