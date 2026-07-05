@@ -179,6 +179,17 @@ npx playwright test --grep @smoke           # smoke tag
 npx playwright test --project=chromium      # single browser
 ```
 
+## Continuous integration
+
+A GitHub Actions workflow (`.github/workflows/playwright.yml`) runs the full suite on every push to `main` and every pull request targeting any branch:
+
+1. Checks out the code and sets up Node.js 22 (with npm caching).
+2. Installs dependencies (`npm ci`) and the Playwright browsers with OS dependencies.
+3. Runs `npx playwright test` across all configured projects (chromium, firefox, webkit).
+4. Uploads the HTML report, JUnit results, and traces/screenshots/videos as workflow artifacts (kept 14 days), even if tests fail.
+
+The PR's check status (pass/fail) reflects the suite's result, so it can be wired up as a required check in branch protection settings. To inspect a failed run, download the `playwright-html-report` artifact from the workflow run and open `index.html`, or `playwright-test-results` for traces of failed tests.
+
 ## License
 
 MIT
